@@ -30,3 +30,4 @@ Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.frmMainForm.res
 Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.newMain.resources
 Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.Properties.Resources.resources
 Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.csproj.GenerateResource.Cache
+Y:\GitHub\dolphiilution\C#\Dolphiilution\bin\Debug\Dolphiilution.exe.config

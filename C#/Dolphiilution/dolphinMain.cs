@@ -85,22 +85,27 @@ namespace Dolphiilution
             if (browseForGames.ShowDialog() == DialogResult.OK)
             {
                 gamesPath = browseForGames.SelectedPath;
+                Properties.Settings.Default.gamespath = gamesPath;
+                Properties.Settings.Default.Save();
+                loadGames();
                 if (!(Directory.Exists(browseForGames.SelectedPath + "/rii")))
                 {
                     Directory.CreateDirectory(browseForGames.SelectedPath + "/rii");
                 }
-                lbxGames.Items.Clear();
-                string[] games = Directory.GetFiles(browseForGames.SelectedPath);
-                foreach (string game in games)
+            }
+        }
+        void loadGames()
+        {
+            lbxGames.Items.Clear();
+            string[] games = Directory.GetFiles(gamesPath);
+            foreach (string game in games)
+            {
+                if (Path.GetFileName(game).ToLower().Contains(".iso") || Path.GetFileName(game).ToLower().Contains(".wbfs"))
                 {
-                    if (Path.GetFileName(game).ToLower().Contains(".iso") || Path.GetFileName(game).ToLower().Contains(".wbfs"))
-                    {
-                        lbxGames.Items.Add(Path.GetFileNameWithoutExtension(game));
-                    }
+                    lbxGames.Items.Add(Path.GetFileNameWithoutExtension(game));
                 }
             }
         }
-
         private void loadRiivolutionFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog riivolutionPathPicker = new FolderBrowserDialog();
@@ -110,20 +115,29 @@ namespace Dolphiilution
             {
                 if (Directory.Exists(riivolutionPathPicker.SelectedPath + "//riivolution"))
                 {
-                    pnlItems.Enabled = true;
                     riivoPath = riivolutionPathPicker.SelectedPath;
-                    string[] files = Directory.GetFiles(riivoPath + "//riivolution");
-                    foreach (string file in files)
-                    {
-                        if (file.Contains(".xml"))
-                        {
-                            cbxRiivolutionXML.Items.Add(Path.GetFileNameWithoutExtension(file));
-                        }
-                    }
+                    loadRiivolutionXML();
+                }
+                else
+                {
+                    MessageBox.Show("Couldn't find a Riivolution folders structure. Are you sure you selected the right path?");
                 }
             }
         }
-
+        void loadRiivolutionXML()
+        {
+            pnlItems.Enabled = true;
+            Properties.Settings.Default.riivopath = riivoPath;
+            Properties.Settings.Default.Save();
+            string[] files = Directory.GetFiles(riivoPath + "//riivolution");
+            foreach (string file in files)
+            {
+                if (file.Contains(".xml"))
+                {
+                    cbxRiivolutionXML.Items.Add(Path.GetFileNameWithoutExtension(file));
+                }
+            }
+        }
         private void btnDecompile_Click(object sender, EventArgs e)
         {
             bgwExtractISO.RunWorkerAsync();
@@ -187,6 +201,8 @@ namespace Dolphiilution
             if (dolphinBrowser.ShowDialog() == DialogResult.OK)
             {
                 dolphinPath = dolphinBrowser.FileName;
+                Properties.Settings.Default.dolphinpath = dolphinPath;
+                Properties.Settings.Default.Save();
             }
         }
 
@@ -220,7 +236,23 @@ namespace Dolphiilution
 
         private void dolphinMain_Load(object sender, EventArgs e)
         {
-
+            if (!(Properties.Settings.Default.gamespath == ""))
+            {
+                gamesPath = Properties.Settings.Default.gamespath;
+                loadGames();
+                MessageBox.Show("Games loaded from settings!");
+            }
+            if (!(Properties.Settings.Default.riivopath == ""))
+            {
+                riivoPath = Properties.Settings.Default.riivopath;
+                loadRiivolutionXML();
+                MessageBox.Show("Riivo loaded from settings!");
+            }
+            if (!(Properties.Settings.Default.dolphinpath == ""))
+            {
+                dolphinPath = Properties.Settings.Default.dolphinpath;
+                MessageBox.Show("Dolphin loaded from settings!");
+            }
         }
     }
 }
