@@ -81,26 +81,26 @@ namespace Dolphiilution
 
         private void loadWiiGamesFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog browseForGames = new FolderBrowserDialog();
+            FolderBrowserDialog browseForGames = new FolderBrowserDialog(); /* folder browser for browsing games */
             if (browseForGames.ShowDialog() == DialogResult.OK)
             {
                 gamesPath = browseForGames.SelectedPath;
-                Properties.Settings.Default.gamespath = gamesPath;
+                Properties.Settings.Default.gamespath = gamesPath; /* saving settings */
                 Properties.Settings.Default.Save();
-                loadGames();
-                if (!(Directory.Exists(browseForGames.SelectedPath + "/rii")))
+                loadGames(); /* building up the list of games */
+                if (!(Directory.Exists(browseForGames.SelectedPath + "/rii"))) /* creating a folder to put our patches in */
                 {
                     Directory.CreateDirectory(browseForGames.SelectedPath + "/rii");
                 }
             }
         }
-        void loadGames()
+        void loadGames() 
         {
             lbxGames.Items.Clear();
-            string[] games = Directory.GetFiles(gamesPath);
+            string[] games = Directory.GetFiles(gamesPath); /* creating an array of all files*/
             foreach (string game in games)
             {
-                if (Path.GetFileName(game).ToLower().Contains(".iso") || Path.GetFileName(game).ToLower().Contains(".wbfs"))
+                if (Path.GetFileName(game).ToLower().Contains(".iso") || Path.GetFileName(game).ToLower().Contains(".wbfs")) /* grabbing any iso or wbfs file and throwing it in the list */
                 {
                     lbxGames.Items.Add(Path.GetFileNameWithoutExtension(game));
                 }
@@ -108,12 +108,12 @@ namespace Dolphiilution
         }
         private void loadRiivolutionFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog riivolutionPathPicker = new FolderBrowserDialog();
+            FolderBrowserDialog riivolutionPathPicker = new FolderBrowserDialog(); /* browsing for the SD file structure */
             riivolutionPathPicker.Description = "Select the folder (or drive, SD cards should work too!) where you have your Riivolution file structure saved.";
 
             if (riivolutionPathPicker.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (Directory.Exists(riivolutionPathPicker.SelectedPath + "//riivolution"))
+                if (Directory.Exists(riivolutionPathPicker.SelectedPath + "//riivolution")) /* just checking if the (virtual SD) has got a Riivolution folder */
                 {
                     riivoPath = riivolutionPathPicker.SelectedPath;
                     loadRiivolutionXML();
@@ -126,13 +126,13 @@ namespace Dolphiilution
         }
         void loadRiivolutionXML()
         {
-            pnlItems.Enabled = true;
+            pnlItems.Enabled = true; /* pnlItems contains all the controls for patching a game */
             Properties.Settings.Default.riivopath = riivoPath;
             Properties.Settings.Default.Save();
-            string[] files = Directory.GetFiles(riivoPath + "//riivolution");
+            string[] files = Directory.GetFiles(riivoPath + "//riivolution"); /* creating an array of all files*/
             foreach (string file in files)
             {
-                if (file.Contains(".xml"))
+                if (file.Contains(".xml")) /* grabbing any xml file and throwing it in the list */
                 {
                     cbxRiivolutionXML.Items.Add(Path.GetFileNameWithoutExtension(file));
                 }
@@ -140,26 +140,26 @@ namespace Dolphiilution
         }
         private void btnDecompile_Click(object sender, EventArgs e)
         {
-            bgwExtractISO.RunWorkerAsync();
+            bgwExtractISO.RunWorkerAsync(); /* decompiling in a backgroundworker is always a good thing*/
         }
 
         private void bgwExtractISO_DoWork(object sender, DoWorkEventArgs e)
         {
             Process extractISO = new Process();
 
-            extractISO.StartInfo.Arguments = "extract \"" + isoPath + "\" \"" + gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "\"";
+            extractISO.StartInfo.Arguments = "extract \"" + isoPath + "\" \"" + gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "\""; /* setting up arguments (looks complicated but all it is is a bunch of escape characters lol */
             extractISO.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
 
-            File.Create(gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "/virgin").Dispose();
-            File.WriteAllText(gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "/virgin", "yes");
-            extractISO.Start();
+            File.Create(gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "/virgin").Dispose(); /* when decompiling, a "virgin file" is created to see if the iso has been patched already*/
+            File.WriteAllText(gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "/virgin", "yes"); /* in this case, the ISO is a virgin */
+            extractISO.Start(); /* starting WIT and making it do everything it needs to do */
             extractISO.WaitForExit();
-            checkIfDecompiled();
+            checkIfDecompiled(); /* resetting buttons */
         }
 
         private void btnPatch_Click(object sender, EventArgs e)
         {
-            if (extracted == true)
+            if (extracted == true) /* making sure if the iso is decompiled */
             {
                 isoPatcher patchISO = new isoPatcher();
                 patchISO.patchIso2(lvwRiivolution, gamesPath, isoPath, riivoPath + "//riivolution/" + cbxRiivolutionXML.SelectedItem.ToString() + ".xml", riivoPath);
@@ -212,8 +212,15 @@ namespace Dolphiilution
             {
                 if (!(lbxGames.SelectedIndex == -1))
                 {
-                    dolBrew dolPatcher = new dolBrew(this);
-                    dolPatcher.Show();
+                    if (!(extracted == false))
+                    {
+                        dolBrew dolPatcher = new dolBrew(this);
+                        dolPatcher.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("You haven't decompiled the game yet.");
+                    }
                 }
                 else
                 {
@@ -240,18 +247,18 @@ namespace Dolphiilution
             {
                 gamesPath = Properties.Settings.Default.gamespath;
                 loadGames();
-                MessageBox.Show("Games loaded from settings!");
+                //MessageBox.Show("Games loaded from settings!");
             }
             if (!(Properties.Settings.Default.riivopath == ""))
             {
                 riivoPath = Properties.Settings.Default.riivopath;
                 loadRiivolutionXML();
-                MessageBox.Show("Riivo loaded from settings!");
+                //MessageBox.Show("Riivo loaded from settings!");
             }
             if (!(Properties.Settings.Default.dolphinpath == ""))
             {
                 dolphinPath = Properties.Settings.Default.dolphinpath;
-                MessageBox.Show("Dolphin loaded from settings!");
+                //MessageBox.Show("Dolphin loaded from settings!");
             }
         }
     }
