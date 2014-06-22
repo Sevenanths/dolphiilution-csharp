@@ -93,7 +93,7 @@ namespace Dolphiilution
                 string[] games = Directory.GetFiles(browseForGames.SelectedPath);
                 foreach (string game in games)
                 {
-                    if (Path.GetFileName(game).Contains("iso"))
+                    if (Path.GetFileName(game).ToLower().Contains(".iso") || Path.GetFileName(game).ToLower().Contains(".wbfs"))
                     {
                         lbxGames.Items.Add(Path.GetFileNameWithoutExtension(game));
                     }

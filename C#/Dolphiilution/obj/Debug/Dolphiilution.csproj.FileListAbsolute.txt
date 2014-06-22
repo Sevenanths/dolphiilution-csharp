@@ -19,3 +19,14 @@ Z:\Projecten\Dolphiilution\Dolphiilution\obj\Debug\Dolphiilution.newMain.resourc
 \\Miiserver\nas\Projecten\Dolphiilution\Dolphiilution\obj\Debug\Dolphiilution.dolphinMain.resources
 Z:\Projecten\Dolphiilution\Dolphiilution\obj\Debug\Dolphiilution.dolphinMain.resources
 \\Miiserver\nas\Projecten\Dolphiilution\Dolphiilution\obj\Debug\Dolphiilution.dolBrew.resources
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.exe
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.pdb
+Y:\GitHub\dolphiilution\C#\Dolphiilution\bin\Debug\Dolphiilution.exe
+Y:\GitHub\dolphiilution\C#\Dolphiilution\bin\Debug\Dolphiilution.pdb
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.csprojResolveAssemblyReference.cache
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.dolBrew.resources
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.dolphinMain.resources
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.frmMainForm.resources
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.newMain.resources
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.Properties.Resources.resources
+Y:\GitHub\dolphiilution\C#\Dolphiilution\obj\Debug\Dolphiilution.csproj.GenerateResource.Cache
