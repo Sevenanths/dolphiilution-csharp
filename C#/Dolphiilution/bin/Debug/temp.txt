@@ -1,1 +1,6 @@
-0|Super Mario Galaxy 2.5|SMG2.5 Demo|Enabled;Disabled|DEMO
+0|CTGP Settings|CTGP Revolution|Enabled!;Disabled|CTsFTW
+1|CTGP Settings|Remove Game Music?|Remove Track Music;Remove Replay Music;Remove Both Track/Replay Music;Disabled|track_disable;replay_disable;all_disable
+2|CTGP Settings|'My Stuff' folder|Enabled;Disabled|any_alteration_patch
+3|CTGP Settings|Chomp Valley Texture Fix|Enabled;Disabled|cvfix
+4|CTGP Settings|Save to SD card?|Enabled;Disabled|redirectsave
+5|CTGP Settings|Special Fonts|'Chalky';'Outline';'MV Boli';Disabled|font_chalky;font_outline;font_boli

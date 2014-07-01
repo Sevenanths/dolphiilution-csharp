@@ -146,6 +146,7 @@ namespace Dolphiilution
         private void bgwExtractISO_DoWork(object sender, DoWorkEventArgs e)
         {
             Process extractISO = new Process();
+            Directory.CreateDirectory(gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)));
 
             extractISO.StartInfo.Arguments = "extract \"" + isoPath + "\" \"" + gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "\""; /* setting up arguments (looks complicated but all it is is a bunch of escape characters lol */
             extractISO.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
@@ -260,6 +261,8 @@ namespace Dolphiilution
                 dolphinPath = Properties.Settings.Default.dolphinpath;
                 //MessageBox.Show("Dolphin loaded from settings!");
             }
+
+            Label.CheckForIllegalCrossThreadCalls = false;
         }
     }
 }

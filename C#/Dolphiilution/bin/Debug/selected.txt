@@ -1,1 +1,6 @@
-SMG2.5 Demo|Enabled|DEMO
+CTGP Revolution|Disabled|CTsFTW
+Remove Game Music?|Remove Track Music|track_disable
+'My Stuff' folder|Enabled|any_alteration_patch
+Chomp Valley Texture Fix|Enabled|cvfix
+Save to SD card?|Enabled|redirectsave
+Special Fonts|'Chalky'|font_chalky
