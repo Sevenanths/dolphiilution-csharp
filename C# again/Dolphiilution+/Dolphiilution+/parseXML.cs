@@ -209,35 +209,29 @@ namespace Dolphiilution_
             string apppath = Application.StartupPath;
             if (lvw.SelectedItems.Count > 0)
             {
-                string[] tempLines = File.ReadAllLines(apppath + "/temp.txt");
-                string line = tempLines[lvw.SelectedIndices[0]];
-                choices = null;
-                choices = line.Split('|')[3].Split(';');
-                cbx.DataSource = choices;
+                string[] tempLines = File.ReadAllLines(apppath + "/temp.txt"); // the lines are read
+                string line = tempLines[lvw.SelectedIndices[0]]; // the selected listviewitem's index corresponds with the right line in the text file
+                // 1|CTGP Settings|Remove Game Music?|Remove Replay Music;Remove Track Music;Remove Both Track/Replay Music;Disabled|replay_disable;track_disable;all_disable; (for example)
+                choices = null; // resetting the array
+                choices = line.Split('|')[3].Split(';'); // an array is made with the fourth piece of the line of the text file and again split (Remove Replay Music;Remove Track Music;Remove Both Track/Replay Music;Disabled)
+                cbx.DataSource = choices; // the datasource is set
             }
         }
-        public void populatePatches(ListView lvw, ComboBox cbx, TextBox txt, string[] choices, string[] patches)
+        public void populatePatches(ListView lvw, ComboBox cbx, TextBox txt, string[] patches)
         {
             string apppath = Application.StartupPath;
             if (lvw.SelectedItems.Count > 0)
             {
-                string[] tempLines = File.ReadAllLines(apppath + "/temp.txt");
-                string line = tempLines[lvw.SelectedIndices[0]];
-                patches = null;
-                patches = line.Split('|')[4].Split(';');
-                //if (!(cbx.Text == "Disabled"))
-                //{
-                txt.Text = patches[cbx.SelectedIndex];
-                //}
-                //else
-                //{
-                //    txt.Text = "";
-                //}
+                string[] tempLines = File.ReadAllLines(apppath + "/temp.txt"); // again reading lines
+                string line = tempLines[lvw.SelectedIndices[0]]; // again picking the right line
+                patches = null; // again resetting the array
+                patches = line.Split('|')[4].Split(';'); // again getting the right part and splitting it
+                txt.Text = patches[cbx.SelectedIndex]; // since the right patch corresponds with the index of the combobox and the right place in the array, this works
             }
         }
         public void writeChanges(ListView lvw, ComboBox cbx, TextBox txt)
         {
-            string apppath = Application.StartupPath;
+            string apppath = Application.StartupPath; // TODO: MAKE THIS WORK
             if (lvw.SelectedItems.Count > 0)
             {
                 string[] tempLines = File.ReadAllLines(apppath + "/temp.txt");

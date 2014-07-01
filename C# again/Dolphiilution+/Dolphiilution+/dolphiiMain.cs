@@ -68,7 +68,7 @@ namespace Dolphiilution_
         private void cbxChoices_SelectedIndexChanged(object sender, EventArgs e)
         {
             parseXML patch = new parseXML();
-            patch.populatePatches(lvwOptions, cbxChoices, txtPatch, choices, patches);
+            patch.populatePatches(lvwOptions, cbxChoices, txtPatch, patches);
         }
     }
 }
