@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using System.Diagnostics;
 
 namespace Dolphiilution_
 {
@@ -104,17 +105,35 @@ namespace Dolphiilution_
         //
         // I figured out this system a few months ago and I have no idea how I did it. I find it quite genius now lol.
         // Anyway, I'll try to explain as well as possible how this all works. Some parts I didn't understand myself :')
-
-        public void generateXML(string inputxml, ListView lvw)
+        public void checkIfConfigExists(string inputxml, string activexmlname, ListView lvw, List<string> choicelist, List<string> patchlist)
         {
+            string apppath = Application.StartupPath;
+            if (File.Exists(apppath + activexmlname))
+            {
+                if (MessageBox.Show("It looks like you have used this XML earlier. Would you like to load the settings you used earlier? Warning: if you select no, all previous settings will be erased!", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    generateXML(inputxml, activexmlname, lvw, choicelist, patchlist);
+                }
+                else
+                {
+                    loadConfigToListView(lvw, activexmlname, choicelist, patchlist);
+                }
+            }
+            else
+            {
+                generateXML(inputxml, activexmlname, lvw, choicelist, patchlist);
+            }
+        }
+        public void generateXML(string inputxml, string activexmlname, ListView lvw, List<string> choiceliststring, List<string> patchliststring)
+        {
+            
             string apppath = Application.StartupPath;
             lvw.Items.Clear(); // clear the listview
 
             XmlDocument xmlDoc = new XmlDocument(); // create the xml document
             xmlDoc.Load(inputxml); // load it
 
-            System.IO.File.Create(apppath + "/temp.txt").Dispose(); // reset both files
-            System.IO.File.Create(apppath + "/selected.txt").Dispose();
+            System.IO.File.Create(apppath + activexmlname).Dispose(); // reset both files
 
             XmlNodeList sections = xmlDoc.SelectNodes("//wiidisc/options/section"); // my way of parsing XML's is actually a little stupid. Sorry! :(
             foreach (XmlNode section in sections) // select each node 
@@ -139,7 +158,7 @@ namespace Dolphiilution_
                         string choicename = choice.Attributes["name"].Value;
                         if (choicelist == "")
                         {
-                            choicelist = choicename;
+                            choicelist = "Disabled;" + choicename;
                         }
                         else
                         {
@@ -150,7 +169,7 @@ namespace Dolphiilution_
                         patchid = patch.Attributes["id"].Value;
                         if (patchlist == "")
                         {
-                            patchlist = patchid;
+                            patchlist = ";" + patchid;
                         }
                         else
                         {
@@ -163,14 +182,10 @@ namespace Dolphiilution_
 
                         // }
                     }
-                    choicelist += ";Disabled";
-                    using (System.IO.StreamWriter file = File.AppendText(@Application.StartupPath + "/temp.txt"))
+                    //choicelist += ";Disabled";
+                    using (System.IO.StreamWriter file = File.AppendText(@Application.StartupPath + activexmlname))
                     {
-                        file.WriteLine(row.ToString() + "|" + sectionname + "|" + optionname + "|" + choicelist + "|" + patchlist + ";");
-                    }
-                    using (System.IO.StreamWriter file3 = File.AppendText(@Application.StartupPath + "/selected.txt"))
-                    {
-                        file3.WriteLine(optionname + "|" + choicelist.Split(';')[0] + "|" + patchlist.Split(';')[0]);
+                        file.WriteLine(row.ToString() + "|" + sectionname + "|" + optionname + "|" + choicelist + "|" + patchlist);
                     }
                     choicelist = "";
                     patchlist = "";
@@ -179,24 +194,25 @@ namespace Dolphiilution_
             }
             // how it's done doesn't really matter, it just works
             // also I don't really understand what all of this means but it works so whatever
+            loadConfigToListView(lvw, activexmlname, choiceliststring, patchliststring);
+        }
+        public void loadConfigToListView(ListView lvw, string activexmlname, List<string> choicelist, List<string> patchlist)
+        {
+            lvw.Items.Clear();
 
-
-            //string choice = node.ChildNodes[0].Attributes["name"].Value;
-            //string patch = node.ChildNodes[0].ChildNodes[0].Attributes["id"].Value;
-
-            using (System.IO.StreamReader read = new StreamReader(@Application.StartupPath + "/temp.txt"))
+            using (System.IO.StreamReader read = new StreamReader(@Application.StartupPath + activexmlname))
             {
                 // Read the file and display it line by line.
                 int counter = 0;
                 string line;
 
                 System.IO.StreamReader file =
-                   new System.IO.StreamReader(Application.StartupPath + "/temp.txt");
+                   new System.IO.StreamReader(Application.StartupPath + activexmlname);
                 while ((line = file.ReadLine()) != null)
                 {
                     ListViewItem item = new ListViewItem(); // create a new listviewitem
                     item.Text = line.Split('|')[2]; // get the third item in the split, which is the name in this case
-                    item.Tag = line.Split('|')[3].Split(';')[0]; // get the fourth split, which is the choice in this case (this is imortant later)
+                    item.Tag = line.Split('|')[1];
                     lvw.Items.Add(item); // add it to the listview
                     counter++;
                 }
@@ -204,40 +220,70 @@ namespace Dolphiilution_
                 file.Close();
             }
         }
-        public void populateChoices(ListView lvw, ComboBox cbx, string[] choices)
+        public void populateChoices(ListView lvw, ComboBox cbx, List<string> choices, string activexmlname)
         {
             string apppath = Application.StartupPath;
             if (lvw.SelectedItems.Count > 0)
             {
-                string[] tempLines = File.ReadAllLines(apppath + "/temp.txt"); // the lines are read
+                string[] tempLines = File.ReadAllLines(apppath + activexmlname); // the lines are read
                 string line = tempLines[lvw.SelectedIndices[0]]; // the selected listviewitem's index corresponds with the right line in the text file
                 // 1|CTGP Settings|Remove Game Music?|Remove Replay Music;Remove Track Music;Remove Both Track/Replay Music;Disabled|replay_disable;track_disable;all_disable; (for example)
-                choices = null; // resetting the array
-                choices = line.Split('|')[3].Split(';'); // an array is made with the fourth piece of the line of the text file and again split (Remove Replay Music;Remove Track Music;Remove Both Track/Replay Music;Disabled)
+                //choices = null; // resetting the array
+                choices = line.Split('|')[3].Split(';').ToList(); // an array is made with the fourth piece of the line of the text file and again split (Remove Replay Music;Remove Track Music;Remove Both Track/Replay Music;Disabled)
                 cbx.DataSource = choices; // the datasource is set
             }
         }
-        public void populatePatches(ListView lvw, ComboBox cbx, TextBox txt, string[] patches)
+        public void populatePatches(ListView lvw, ComboBox cbx, TextBox txt, List<string> choices, List<string> patches, string activexmlname)
         {
             string apppath = Application.StartupPath;
             if (lvw.SelectedItems.Count > 0)
             {
-                string[] tempLines = File.ReadAllLines(apppath + "/temp.txt"); // again reading lines
+                if (!(cbx.Text == ""))
+            {
+                string[] tempLines = File.ReadAllLines(apppath + activexmlname); // again reading lines
                 string line = tempLines[lvw.SelectedIndices[0]]; // again picking the right line
-                patches = null; // again resetting the array
-                patches = line.Split('|')[4].Split(';'); // again getting the right part and splitting it
+                //patches = null; // again resetting the array
+                patches = line.Split('|')[4].Split(';').ToList(); // again getting the right part and splitting it
                 txt.Text = patches[cbx.SelectedIndex]; // since the right patch corresponds with the index of the combobox and the right place in the array, this works
+              
+
+                string newChoiceList;
+                newChoiceList = cbx.Text + ";";
+                foreach (var item in cbx.Items)
+                {
+                    if (!(item.ToString() == cbx.Text))
+                    {
+                        newChoiceList += item.ToString() + ";";
+                    }
+                }
+                string newPatchList;
+                newPatchList = txt.Text + ";";
+                foreach (string patch in patches)
+                {
+                    if (!(patch == txt.Text))
+                    {
+                        newPatchList += patch + ";";
+                    }
+                }
+                //foreach (string patch in newPatchList)
+                //{
+                //    Debug.WriteLine(patch);
+                //}
+                tempLines[lvw.SelectedIndices[0]] = lvw.SelectedIndices[0].ToString() + "|" + lvw.SelectedItems[0].Tag + "|" + lvw.SelectedItems[0].Text + "|" + newChoiceList.Remove(newChoiceList.Length - 1) + "|" + newPatchList.Remove(newPatchList.Length - 1);
+                //MessageBox.Show(tempLines[lvw.SelectedIndices[0]]);
+                File.WriteAllLines(apppath + activexmlname, tempLines);
             }
+           }
         }
-        public void writeChanges(ListView lvw, ComboBox cbx, TextBox txt)
+        public void writeChanges(ListView lvw, ComboBox cbx, TextBox txt, string activexmlname)
         {
             string apppath = Application.StartupPath; // TODO: MAKE THIS WORK
             if (lvw.SelectedItems.Count > 0)
             {
-                string[] tempLines = File.ReadAllLines(apppath + "/temp.txt");
+                string[] tempLines = File.ReadAllLines(apppath + activexmlname);
+
             }
         }
-
         //public void populateChoicesAndPatchID2(ListView lvw, ComboBox cbx, List<string> choicelist, List<string> patchlist)
         //{
         //    // REWORKED VERSION _ SHOULD BE MORE STABLE
