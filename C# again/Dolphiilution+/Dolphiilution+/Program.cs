@@ -16,7 +16,7 @@ namespace Dolphiilution_
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new dolphiiMain());
+            Application.Run(new homeScreen());
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Dolphiilution_
         // OVERLY HARD XML PARSING ALERT
         //
         // This is a little difficult to understand maybe, and also probably not efficient, but this is the only way I found to do this, dealing
-        // with .NET's limitations.
+        // with .NET's limitations (and my lack of knowledge).
         //
-        // I'll use MrBean's Riivolution XML as an example. Because manipulating normal text files is easier than using XML's, the goal is to convert
+        // I'll use MrBean's obsolete Riivolution XML as an example. Because manipulating normal text files is easier than using XML's, the goal is to convert
         //  <options>
             
         
@@ -85,48 +85,34 @@ namespace Dolphiilution_
         // 3|CTGP Settings|Chomp Valley Texture Fix|Enabled;Disabled|cvfix
         // 4|CTGP Settings|Save to SD card?|Enabled;Disabled|redirectsave
         // 5|CTGP Settings|Special Fonts|'Chalky';'Outline';'MV Boli';Disabled|font_chalky;font_outline;font_boli
+        //
         // Much easier to parse, right?
         // Indeed. But that's not all.
-        // The file up above is "temp.txt" and gets overwritten every time you select a different XML.
-        // There is also another XML which is not overwritten and saves your choices. Unfortunately this one is also overwritten but I'll fix that sometime.
-        // This is what 'selected.txt' looks like:
-        //
-        // CTGP Revolution|Enabled!|CTsFTW
-        // Remove Game Music?|Remove Track Music|track_disable
-        // 'My Stuff' folder|Enabled|any_alteration_patch
-        // Chomp Valley Texture Fix|Enabled|cvfix
-        // Save to SD card?|Enabled|redirectsave
-        // Special Fonts|'Chalky'|font_chalky
-        //
-        // As you can see, this is a more slimmed down version and it will change accordingly. For example, if you select 'Outline' as your special font,
-        // the last line of the file will change into this:
-        // Special Fonts|'Outline'|font_outline
-        // When 'Disabled' is selected, there will just be nothing as a patch and the program knows it doesn't need to do anything.
-        //
+        // The file up above is /configurations/$xmlname.txt". Your choices are not saved in the xml, but in a seperate folder. This was a convenient side effect.
         // I figured out this system a few months ago and I have no idea how I did it. I find it quite genius now lol.
         // Anyway, I'll try to explain as well as possible how this all works. Some parts I didn't understand myself :')
+        // EXAMPLES:  SD:\riivolution\mkwiiriivoslottest, /configurations/mkwiiriivoslottest.txt
         public void checkIfConfigExists(string inputxml, string activexmlname, ListView lvw, List<string> choicelist, List<string> patchlist)
         {
-            string apppath = Application.StartupPath;
-            if (File.Exists(apppath + activexmlname))
+            string apppath = Application.StartupPath; // Can't I just put this shit on top?
+            if (File.Exists(apppath + activexmlname)) // If you have used this XML earlier, we ask the user is he/she wants to load previous settings, as changes are saved automagically
             {
                 if (MessageBox.Show("It looks like you have used this XML earlier. Would you like to load the settings you used earlier? Warning: if you select no, all previous settings will be erased!", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    generateXML(inputxml, activexmlname, lvw, choicelist, patchlist);
+                    generateXML(inputxml, activexmlname, lvw, choicelist, patchlist); // rebuild the xml entirely and overwrite all choices
                 }
                 else
                 {
-                    loadConfigToListView(lvw, activexmlname, choicelist, patchlist);
+                    loadConfigToListView(lvw, activexmlname, choicelist, patchlist); // just load the xml from the existing configuration files
                 }
             }
             else
             {
-                generateXML(inputxml, activexmlname, lvw, choicelist, patchlist);
+                generateXML(inputxml, activexmlname, lvw, choicelist, patchlist); // rebuild the xml entirely and overwrite all choices (there isn't a parsed version saved yet)
             }
         }
         public void generateXML(string inputxml, string activexmlname, ListView lvw, List<string> choiceliststring, List<string> patchliststring)
         {
-            
             string apppath = Application.StartupPath;
             lvw.Items.Clear(); // clear the listview
 
@@ -146,27 +132,27 @@ namespace Dolphiilution_
                 string patchid = ""; // patch id's
                 foreach (XmlNode option in options)
                 {
-                    patchlist = ""; // flush the strings
+                    patchlist = ""; // choices, patches and patchid's are reset with every option (as they should)
                     choicelist = "";
                     patchid = "";
                     row++;
 
                     string optionname = option.Attributes["name"].Value; // get the name of the options
-                    XmlNodeList choices = xmlDoc.SelectNodes(GetXPathToNode(option) + "/node()");
-                    foreach (XmlNode choice in choices)
+                    XmlNodeList choices = xmlDoc.SelectNodes(GetXPathToNode(option) + "/node()"); // select the next set of nodes (choices)
+                    foreach (XmlNode choice in choices) // foreach choice
                     {
-                        string choicename = choice.Attributes["name"].Value;
-                        if (choicelist == "")
+                        string choicename = choice.Attributes["name"].Value; // fetch name, add it to a list of choices
+                        if (choicelist == "") // when the list of choices is empty, initialize it and put the first choice in
                         {
                             choicelist = "Disabled;" + choicename;
                         }
-                        else
+                        else // if not, just add another choice
                         {
                             choicelist += ";" + choicename;
                         }
-                        XmlNode patch = xmlDoc.SelectSingleNode(GetXPathToNode(choice) + "/node()");
+                        XmlNode patch = xmlDoc.SelectSingleNode(GetXPathToNode(choice) + "/node()"); // select the next set of nodes (patches)
                         // {
-                        patchid = patch.Attributes["id"].Value;
+                        patchid = patch.Attributes["id"].Value; // same story as above
                         if (patchlist == "")
                         {
                             patchlist = ";" + patchid;
@@ -175,26 +161,19 @@ namespace Dolphiilution_
                         {
                             patchlist += ";" + patchid;
                         }
-                        /*choicePath.Add(choicename, patchid);*/
-
-
-
-
-                        // }
                     }
-                    //choicelist += ";Disabled";
+                    //choicelist += ";Disabled"; originally, disabled was last, but this was inconvenient because it should be loading first in the combobox
                     using (System.IO.StreamWriter file = File.AppendText(@Application.StartupPath + activexmlname))
                     {
-                        file.WriteLine(row.ToString() + "|" + sectionname + "|" + optionname + "|" + choicelist + "|" + patchlist);
+                        file.WriteLine(row.ToString() + "|" + sectionname + "|" + optionname + "|" + choicelist + "|" + patchlist); // write the entire line to the file
                     }
-                    choicelist = "";
-                    patchlist = "";
+                    //choicelist = ""; I don't think this is necessary but it was in originally so this may be an old piece of code
+                    //patchlist = "";
                 }
 
             }
-            // how it's done doesn't really matter, it just works
-            // also I don't really understand what all of this means but it works so whatever
-            loadConfigToListView(lvw, activexmlname, choiceliststring, patchliststring);
+
+            loadConfigToListView(lvw, activexmlname, choiceliststring, patchliststring); // fire the next event, loading everything into the listview
         }
         public void loadConfigToListView(ListView lvw, string activexmlname, List<string> choicelist, List<string> patchlist)
         {
@@ -212,7 +191,7 @@ namespace Dolphiilution_
                 {
                     ListViewItem item = new ListViewItem(); // create a new listviewitem
                     item.Text = line.Split('|')[2]; // get the third item in the split, which is the name in this case
-                    item.Tag = line.Split('|')[1];
+                    item.Tag = line.Split('|')[1]; // get the second item in the split, which is the section name
                     lvw.Items.Add(item); // add it to the listview
                     counter++;
                 }
@@ -220,7 +199,8 @@ namespace Dolphiilution_
                 file.Close();
             }
         }
-        public void populateChoices(ListView lvw, ComboBox cbx, List<string> choices, string activexmlname)
+        public void populateChoices(ListView lvw, ComboBox cbx, List<string> choices, string activexmlname) // originally populating patches and writing choices were a different event but they were merged,
+                                                                                                            //that's why the structure of this event may be a little weird
         {
             string apppath = Application.StartupPath;
             if (lvw.SelectedItems.Count > 0)
@@ -247,16 +227,16 @@ namespace Dolphiilution_
                 txt.Text = patches[cbx.SelectedIndex]; // since the right patch corresponds with the index of the combobox and the right place in the array, this works
               
 
-                string newChoiceList;
-                newChoiceList = cbx.Text + ";";
-                foreach (var item in cbx.Items)
+                string newChoiceList; // create a new "list" to change the order of the patches, I tried shifting around in lists but this way a million times easier
+                newChoiceList = cbx.Text + ";"; // initialize the first item
+                foreach (var item in cbx.Items) // I would use the other list but it didn't work for some reason so I'm using the listbox items as they're the same
                 {
-                    if (!(item.ToString() == cbx.Text))
+                    if (!(item.ToString() == cbx.Text)) // make sure we don't add the selected item twice!
                     {
-                        newChoiceList += item.ToString() + ";";
+                        newChoiceList += item.ToString() + ";"; // add it to the list, as well as my favourite espace character
                     }
                 }
-                string newPatchList;
+                string newPatchList; // basicly the same for the patches, but for some reason the list did work here
                 newPatchList = txt.Text + ";";
                 foreach (string patch in patches)
                 {
@@ -269,21 +249,14 @@ namespace Dolphiilution_
                 //{
                 //    Debug.WriteLine(patch);
                 //}
+                // write back everything to the right line so next time it's loaded, the picked choice will be on top in the listbox, as well making it easier to find which item is selected in the patch sequence (so much win in one line of code!)
                 tempLines[lvw.SelectedIndices[0]] = lvw.SelectedIndices[0].ToString() + "|" + lvw.SelectedItems[0].Tag + "|" + lvw.SelectedItems[0].Text + "|" + newChoiceList.Remove(newChoiceList.Length - 1) + "|" + newPatchList.Remove(newPatchList.Length - 1);
                 //MessageBox.Show(tempLines[lvw.SelectedIndices[0]]);
                 File.WriteAllLines(apppath + activexmlname, tempLines);
             }
            }
         }
-        public void writeChanges(ListView lvw, ComboBox cbx, TextBox txt, string activexmlname)
-        {
-            string apppath = Application.StartupPath; // TODO: MAKE THIS WORK
-            if (lvw.SelectedItems.Count > 0)
-            {
-                string[] tempLines = File.ReadAllLines(apppath + activexmlname);
-
-            }
-        }
+        // this is the broken code, I decided to let it in. Dunno why but I'd find it a waste to delete this.
         //public void populateChoicesAndPatchID2(ListView lvw, ComboBox cbx, List<string> choicelist, List<string> patchlist)
         //{
         //    // REWORKED VERSION _ SHOULD BE MORE STABLE
@@ -423,6 +396,8 @@ namespace Dolphiilution_
         //        }
         //    }
         //}
+
+        // got this of the web it works but I have no idea how it works oops
         public string GetXPathToNode(XmlNode node)
         {
             StringBuilder builder = new StringBuilder();

@@ -20,89 +20,74 @@ namespace Dolphiilution_
             string[] games = Directory.GetFiles(wiigamespath); //creating a list of all ISO and WBFS files, then displaying them in the combobox
             foreach (string game in games)
             {
-                if (Path.GetFileName(game).ToLower().Contains(".iso") || Path.GetFileName(game).ToLower().Contains("wbfs"))
+                if (Path.GetFileName(game).ToLower().Contains(".iso") || Path.GetFileName(game).ToLower().Contains("wbfs")) // seeing if there isn't other junk inside the folder
                 {
                     cbxGames.Items.Add(Path.GetFileName(game));
                 }
             }
         }
-        public void checkIfDecompiled(string gamespath, ComboBox cbx, Button btnDecompiled, Button btnOpenPatch)
+        public void checkIfDecompiled(string gamespath, ComboBox cbx, Button btnDecompiled, Button btnOpenPatch, Button btnLaunch, PictureBox pbxBoxart, PictureBox pbxRegion)
         {
-            if (Directory.Exists(gamespath + "/rii/" + Path.GetFileNameWithoutExtension(cbx.Text)))
+            if (Directory.Exists(gamespath + "/rii/" + Path.GetFileNameWithoutExtension(cbx.Text))) // if the game's mod folder already exists, 
             {
                 btnDecompiled.Enabled = true;
-                btnDecompiled.Text = "Remove patch";
+                btnDecompiled.Text = "Reset";
                 btnOpenPatch.Enabled = true;
+                btnLaunch.Enabled = true;
             }
-            else
+            else                                                                                    // if not, do the same but in reverse
             {
                 btnDecompiled.Enabled = true;
                 btnDecompiled.Text = "Decompile";
                 btnOpenPatch.Enabled = false;
+                btnLaunch.Enabled = false;
             }
+            extras boxartyay = new extras();                                                        // initialize the right shenanigans 
+            postpatch hex = new postpatch();
+            boxartyay.getboxart(generateGameID(gamespath + "/" + cbx.Text), pbxBoxart, pbxRegion);  // grab the boxart and region (I like this feature so much omg)
         }
         public void decompileButtonAction(string gamespath, ComboBox cbx, Button btn)
         {
-            if (btn.Text == "Remove patch")
+            if (btn.Text == "Reset")                                                                // dunno how I could've done this better, but this action removes the /rii/$isoname directory completely
             {
                 if (MessageBox.Show("You're about to remove all your patches you have applied to this specific game. Are you sure you want to continue?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     Directory.Delete(gamespath + "/rii/" + Path.GetFileNameWithoutExtension(cbx.Text), true);
                 }
             }
-            else if (btn.Text == "Decompile")
+            else if (btn.Text == "Decompile")                                                       //
             {
-                decompileForm decompile = new decompileForm();
-                decompile.Show();
-                decompileGame(gamespath, cbx);
-                decompile.Close();
+                decompileForm decompile = new decompileForm();                                      // again, initializing
+                //decompile.Show();
+                decompileGame(gamespath, cbx);                                                      // decompile the game
+                //decompile.Close();
             }
         }
-        public void googleImageSearch()
-        { 
-        
+        public void openPatchFolder(string gamesPath, ComboBox cbx)
+        {
+
         }
         public void decompileGame(string gamesPath, ComboBox cbx)
         {
-            string isoPath = gamesPath + "/" + cbx.Text;
+            string isoPath = gamesPath + "/" + cbx.Text; // I should've had a better solution to do this, but oh well.
 
             Process extractISO = new Process();
 
-            Debug.WriteLine("extract \"" + isoPath + "\" \"" + gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "\"");
+            //Debug.WriteLine("extract \"" + isoPath + "\" \"" + gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "\"");
             extractISO.StartInfo.Arguments = "extract \"" + isoPath + "\" \"" + gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "\""; /* setting up arguments (looks complicated but all it is is a bunch of escape characters lol */
-            extractISO.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            extractISO.StartInfo.CreateNoWindow = true;
+            extractISO.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; // making sure you don't see it
+            extractISO.StartInfo.CreateNoWindow = true; // same
             extractISO.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
 
             extractISO.Start(); /* starting WIT and making it do everything it needs to do */
             extractISO.WaitForExit();
-        }
-        public void decompileGame2(string gamesPath, ComboBox cbx)
-        {
-            string isoPath = gamesPath + "/" + cbx.Text;
-
-             // Start the child process.
-             Process p = new Process();
-             // Redirect the output stream of the child process.
-             p.StartInfo.UseShellExecute = false;
-             p.StartInfo.RedirectStandardOutput = true;
-             p.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
-             p.StartInfo.Arguments = "extract \"" + isoPath + "\" \"" + gamesPath + "/rii/" + Path.GetFileName(gamesPath + "/" + Path.GetFileNameWithoutExtension(isoPath)) + "\""; /* setting up arguments (looks complicated but all it is is a bunch of escape characters lol */
-             p.Start();
-             // Do not wait for the child process to exit before
-             // reading to the end of its redirected stream.
-             // p.WaitForExit();
-             // Read the output stream first and then wait.
-             string output = p.StandardOutput.ReadToEnd();
-             p.WaitForExit();
-                        
         }
         public string generateGameID(string isopath)
         {
             string output = string.Empty; // general setup
             string error = string.Empty;
 
-            Process wit = new Process();                                           //long complicated code just to fetch a game id
+            Process wit = new Process();                                           //long code just to fetch a game id
             wit.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
             wit.StartInfo.Arguments = "id " + "\"" + isopath + "\"";
             wit.StartInfo.RedirectStandardError = true;

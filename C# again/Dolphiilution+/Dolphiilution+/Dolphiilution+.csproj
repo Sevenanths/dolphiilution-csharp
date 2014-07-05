@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Dolphiilution_.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,15 +61,23 @@
     <Compile Include="dolphiiMain.Designer.cs">
       <DependentUpon>dolphiiMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="extras.cs" />
     <Compile Include="firstRun.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="firstRun.Designer.cs">
       <DependentUpon>firstRun.cs</DependentUpon>
     </Compile>
+    <Compile Include="homeScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="homeScreen.Designer.cs">
+      <DependentUpon>homeScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="mainCode.cs" />
     <Compile Include="parseXML.cs" />
     <Compile Include="patch.cs" />
+    <Compile Include="postpatch.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="decompileForm.resx">
@@ -77,6 +88,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="firstRun.resx">
       <DependentUpon>firstRun.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="homeScreen.resx">
+      <DependentUpon>homeScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -103,6 +117,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\DECOMP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\European-Union-Flag-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Japan-Flag-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\United-States-Flag-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

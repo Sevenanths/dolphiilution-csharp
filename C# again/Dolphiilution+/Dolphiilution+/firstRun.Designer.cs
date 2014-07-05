@@ -224,7 +224,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "firstRun";
             this.Text = "Settings";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.firstRun_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.firstRun_FormClosed);
             this.Load += new System.EventHandler(this.firstRun_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

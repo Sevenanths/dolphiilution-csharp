@@ -13,6 +13,8 @@ namespace Dolphiilution_
     {
         public void patchParse(string activexmlname, string inputxml, string riifolderpath, string sdcardpath, string region, ComboBox cbx)
         {
+            //
+
             string apppath = Application.StartupPath;
             string dataprefix;
             string backuppath = apppath + "/backups/" + Path.GetFileNameWithoutExtension(cbx.Text);
@@ -98,9 +100,11 @@ namespace Dolphiilution_
                                                             }
                                                         }
 
+                                                        string fullpatchpath = sdcardpath + root + "/" + external;
+
                                                         if (create == false)
                                                         {
-                                                            string fullpatchpath = sdcardpath + root + external;
+                                                           
 
                                                             string[] filesinpatchfolder = Directory.GetFiles(fullpatchpath);
                                                             foreach (string file in filesinpatchfolder)
@@ -114,6 +118,8 @@ namespace Dolphiilution_
                                                                 }
                                                             }
                                                         }
+                                                        //MessageBox.Show(fullpatchpath + "\n" + riifolderpath + disc);
+                                                        CopyDir(fullpatchpath, riifolderpath + disc);
                                                     }
                                                     else
                                                     {
@@ -138,13 +144,14 @@ namespace Dolphiilution_
                                                     }
                                                     if (create == false)
                                                     {
-                                                        MessageBox.Show(riifolderpath + dataprefix + disc + "\n" + backuppath + disc);
                                                         if (File.Exists(riifolderpath + dataprefix + disc))
                                                         {
                                                             System.IO.Directory.CreateDirectory(Path.GetDirectoryName(backuppath + disc));
                                                             File.Copy(riifolderpath + dataprefix + disc, backuppath + disc, true);
                                                         }
                                                     }
+                                                    //MessageBox.Show(sdcardpath + root + "/" + external + "\n" + riifolderpath + dataprefix + disc);
+                                                    File.Copy(sdcardpath + root + "/" + external, riifolderpath + dataprefix + disc);
                                                 }
                                             }
                                         }
@@ -159,8 +166,40 @@ namespace Dolphiilution_
         public void determineIfDATA(string gamespath, ComboBox cbx)
         {
             dolphiiMain dolphinMain = new dolphiiMain();
+        }
+        public string determineRegion(string isopath)
+        {
+            string output = string.Empty;
+            string error = string.Empty;
 
-            
+            Process wit = new Process();
+            wit.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
+            wit.StartInfo.Arguments = "list -l " + "\"" + isopath + "\"";
+            wit.StartInfo.RedirectStandardError = true;
+            wit.StartInfo.RedirectStandardOutput = true;
+            wit.StartInfo.UseShellExecute = false;
+            wit.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            wit.StartInfo.CreateNoWindow = true;
+            wit.Start();
+
+            using (StreamReader streamReader = wit.StandardOutput)
+            {
+                output = streamReader.ReadToEnd();
+            }
+
+            if (output.Contains("PAL"))
+            {
+                return "P";
+            }
+            if (output.Contains("NTSC-J"))
+            {
+                return "J";
+            }
+            if (output.Contains("NTSC"))
+            {
+                return "E";
+            }
+            return "";
         }
         public static void CopyDir(string source, string target)
         {

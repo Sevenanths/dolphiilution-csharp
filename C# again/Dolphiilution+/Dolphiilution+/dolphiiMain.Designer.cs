@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(dolphiiMain));
             this.cbxGames = new System.Windows.Forms.ComboBox();
             this.pnlInfo = new System.Windows.Forms.Panel();
             this.btnPatch = new System.Windows.Forms.Button();
@@ -41,17 +42,19 @@
             this.pbxCoverArt = new System.Windows.Forms.PictureBox();
             this.btnDecompiled = new System.Windows.Forms.Button();
             this.lblGameID = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.pbxRegion = new System.Windows.Forms.PictureBox();
+            this.btnLaunch = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
             this.pnlInfo.SuspendLayout();
             this.panel1.SuspendLayout();
             this.pnlIsoInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbxCoverArt)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxRegion)).BeginInit();
             this.SuspendLayout();
             // 
             // cbxGames
             // 
+            this.cbxGames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxGames.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxGames.FormattingEnabled = true;
             this.cbxGames.Location = new System.Drawing.Point(115, 12);
@@ -120,6 +123,7 @@
             // 
             // cbxXML
             // 
+            this.cbxXML.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxXML.Font = new System.Drawing.Font("Segoe UI", 12.25F);
             this.cbxXML.FormattingEnabled = true;
             this.cbxXML.Location = new System.Drawing.Point(3, 3);
@@ -156,12 +160,14 @@
             this.btnOpenPatch.TabIndex = 1;
             this.btnOpenPatch.Text = "Open patch folder";
             this.btnOpenPatch.UseVisualStyleBackColor = true;
+            this.btnOpenPatch.Click += new System.EventHandler(this.btnOpenPatch_Click);
             // 
             // pbxCoverArt
             // 
             this.pbxCoverArt.Location = new System.Drawing.Point(4, 33);
             this.pbxCoverArt.Name = "pbxCoverArt";
             this.pbxCoverArt.Size = new System.Drawing.Size(241, 287);
+            this.pbxCoverArt.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbxCoverArt.TabIndex = 2;
             this.pbxCoverArt.TabStop = false;
             // 
@@ -184,35 +190,34 @@
             this.lblGameID.Size = new System.Drawing.Size(0, 13);
             this.lblGameID.TabIndex = 3;
             // 
-            // button2
+            // pbxRegion
             // 
-            this.button2.Location = new System.Drawing.Point(644, 357);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "settings";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.pbxRegion.Location = new System.Drawing.Point(616, 6);
+            this.pbxRegion.Name = "pbxRegion";
+            this.pbxRegion.Size = new System.Drawing.Size(55, 49);
+            this.pbxRegion.TabIndex = 6;
+            this.pbxRegion.TabStop = false;
             // 
-            // button3
+            // btnLaunch
             // 
-            this.button3.Location = new System.Drawing.Point(644, 293);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnLaunch.Enabled = false;
+            this.btnLaunch.Image = ((System.Drawing.Image)(resources.GetObject("btnLaunch.Image")));
+            this.btnLaunch.Location = new System.Drawing.Point(664, 337);
+            this.btnLaunch.Name = "btnLaunch";
+            this.btnLaunch.Size = new System.Drawing.Size(46, 42);
+            this.btnLaunch.TabIndex = 5;
+            this.btnLaunch.UseVisualStyleBackColor = true;
+            this.btnLaunch.Click += new System.EventHandler(this.btnLaunch_Click);
             // 
-            // button4
+            // btnSettings
             // 
-            this.button4.Location = new System.Drawing.Point(644, 322);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 6;
-            this.button4.Text = "button4";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.btnSettings.Image = ((System.Drawing.Image)(resources.GetObject("btnSettings.Image")));
+            this.btnSettings.Location = new System.Drawing.Point(12, 337);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(46, 42);
+            this.btnSettings.TabIndex = 4;
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.button2_Click);
             // 
             // dolphiiMain
             // 
@@ -220,22 +225,24 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(722, 391);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.pbxRegion);
+            this.Controls.Add(this.btnLaunch);
+            this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.lblGameID);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pnlInfo);
             this.Controls.Add(this.cbxGames);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.Name = "dolphiiMain";
-            this.Text = "Dolplhiilution :: C# version 2.0";
+            this.Text = "Dolphiilution+ for Wii :: by Anthe :: release preview";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.dolphiiMain_FormClosed);
             this.Load += new System.EventHandler(this.dolphiiMain_Load);
             this.pnlInfo.ResumeLayout(false);
             this.pnlInfo.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.pnlIsoInfo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbxCoverArt)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxRegion)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,13 +259,13 @@
         private System.Windows.Forms.ComboBox cbxXML;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblGameID;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Panel pnlIsoInfo;
         private System.Windows.Forms.PictureBox pbxCoverArt;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button btnOpenPatch;
         private System.Windows.Forms.Button btnDecompiled;
+        private System.Windows.Forms.Button btnLaunch;
+        private System.Windows.Forms.PictureBox pbxRegion;
 
     }
 }

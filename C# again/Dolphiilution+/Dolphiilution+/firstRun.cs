@@ -74,14 +74,6 @@ namespace Dolphiilution_
             txtDophinUD.Text = Properties.Settings.Default.globaluserpath;
             txtRiivoPath.Text = Properties.Settings.Default.riivopath;
         }
-
-        private void firstRun_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Properties.Settings.Default.firstrun = false;
-            Properties.Settings.Default.Save();
-            Application.Restart();
-        }
-
         private void btnRiivoPath_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog browseForRiivo = new FolderBrowserDialog();
@@ -92,6 +84,14 @@ namespace Dolphiilution_
                 Properties.Settings.Default.Save();
                 txtRiivoPath.Text = Properties.Settings.Default.riivopath;
             }
+        }
+
+        private void firstRun_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.firstrun = false;
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Please restart the program for your changes to take effect.");
+            Application.Exit();
         }
     }
 }

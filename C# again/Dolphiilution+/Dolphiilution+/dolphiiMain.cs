@@ -43,14 +43,15 @@ namespace Dolphiilution_
         }
         private void cbxGames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mainCode mainCodes = new mainCode();
-            //lblGameID.Text = getHex.generateGameID(Properties.Settings.Default.wiigamespath + "/" + cbxGames.SelectedItem.ToString());
-            mainCodes.checkIfDecompiled(Properties.Settings.Default.wiigamespath, cbxGames, btnDecompiled, btnOpenPatch);
+          
+                mainCode mainCodes = new mainCode();
+                mainCodes.checkIfDecompiled(Properties.Settings.Default.wiigamespath, cbxGames, btnDecompiled, btnOpenPatch, btnLaunch, pbxCoverArt, pbxRegion);
+            
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            firstRun settings = new firstRun(); //showing th esettings
+            firstRun settings = new firstRun(); //showing the settings
             settings.Show();
         }
 
@@ -95,14 +96,33 @@ namespace Dolphiilution_
         {
             mainCode mainCodes = new mainCode();
             mainCodes.decompileButtonAction(Properties.Settings.Default.wiigamespath, cbxGames, btnDecompiled);
-            mainCodes.checkIfDecompiled(Properties.Settings.Default.wiigamespath, cbxGames, btnDecompiled, btnOpenPatch);
+            mainCodes.checkIfDecompiled(Properties.Settings.Default.wiigamespath, cbxGames, btnDecompiled, btnOpenPatch, btnLaunch, pbxCoverArt, pbxRegion);
         }
 
         private void btnPatch_Click(object sender, EventArgs e)
         {
             patch isoPatch = new patch();
             isoPatch.determineIfDATA(Properties.Settings.Default.wiigamespath, cbxGames);
-            isoPatch.patchParse(activesxmlname, Properties.Settings.Default.riivopath + "/riivolution/" + cbxXML.Text + ".xml", Properties.Settings.Default.wiigamespath + "/rii/" + Path.GetFileNameWithoutExtension(cbxGames.Text), Properties.Settings.Default.riivopath, "P", cbxGames);
+            isoPatch.patchParse(activesxmlname, Properties.Settings.Default.riivopath + "/riivolution/" + cbxXML.Text + ".xml", Properties.Settings.Default.wiigamespath + "/rii/" + Path.GetFileNameWithoutExtension(cbxGames.Text), Properties.Settings.Default.riivopath, isoPatch.determineRegion(Properties.Settings.Default.wiigamespath + "/" + cbxGames.Text), cbxGames);
+        }
+
+        private void btnOpenPatch_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLaunch_Click(object sender, EventArgs e)
+        {
+            if (!(cbxGames.Text == ""))
+            {
+                postpatch patchpost = new postpatch();
+                patchpost.copyDol(Properties.Settings.Default.wiigamespath + "/rii/" + Path.GetFileNameWithoutExtension(cbxGames.Text), Properties.Settings.Default.wiigamespath + "/" + cbxGames.Text);
+            }
+        }
+
+        private void dolphiiMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
