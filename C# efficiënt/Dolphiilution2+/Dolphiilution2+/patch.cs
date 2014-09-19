@@ -19,6 +19,7 @@ namespace Dolphiilution2_
             string dataprefix;
             string sysprefix;
             string backuppath = apppath + "/backups/" + Path.GetFileNameWithoutExtension(cbx.Text);
+            bool memorypatched = false;
 
             if (Directory.Exists(riifolderpath + "/DATA/"))
             {
@@ -148,7 +149,7 @@ namespace Dolphiilution2_
                                                         }
                                                     }
                                                 }
-   /* FILE PATCH STARTS HERE*/                  if (filefolder.Name == "file")
+   /* FILE PATCH STARTS HERE*/                  else if (filefolder.Name == "file")
                                                 {
                                                     string disc = "";
                                                     disc = filefolder.Attributes["disc"].Value;
@@ -173,24 +174,36 @@ namespace Dolphiilution2_
                                                         }
                                                     }
                                                     //MessageBox.Show(sdcardpath + root + "/" + external + "\n" + riifolderpath + dataprefix + disc);
-                                                    File.Copy(sdcardpath + root + "/" + external, riifolderpath + dataprefix + disc);
+                                                    if (File.Exists(sdcardpath + root + "/" + external))
+                                                    {
+                                                        File.Copy(sdcardpath + root + "/" + external, riifolderpath + dataprefix + disc, true);
+                                                    }                                             
                                                 }
-
-                                                string output;
-   /* MEMORY PATCH STARTS HERE */               Process wit = new Process();
-                                                wit.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
-                                                wit.StartInfo.Arguments = "dolpatch \"" + dollocation + "\" xml=" + inputxml;
-                                                wit.StartInfo.RedirectStandardError = true;
-                                                wit.StartInfo.RedirectStandardOutput = true;
-                                                wit.StartInfo.UseShellExecute = false;
-                                                wit.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                                                wit.StartInfo.CreateNoWindow = true;
-                                                wit.Start();
-
-                                                using (StreamReader streamReader = wit.StandardOutput)
+                                                else if  (filefolder.Name == "memory")
                                                 {
-                                                    output = streamReader.ReadToEnd();
+                                                    if (!(memorypatched))
+                                                    {
+                                                        string output;
+                                                        /* MEMORY PATCH STARTS HERE */
+                                                        Process wit = new Process();
+                                                        wit.StartInfo.FileName = Application.StartupPath + "/WIT/wit.exe";
+                                                        wit.StartInfo.Arguments = "dolpatch \"" + dollocation + "\" xml=" + inputxml;
+                                                        wit.StartInfo.RedirectStandardError = true;
+                                                        wit.StartInfo.RedirectStandardOutput = true;
+                                                        wit.StartInfo.UseShellExecute = false;
+                                                        wit.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                                                        wit.StartInfo.CreateNoWindow = true;
+                                                        wit.Start();
+
+                                                        using (StreamReader streamReader = wit.StandardOutput)
+                                                        {
+                                                            output = streamReader.ReadToEnd();
+                                                            //MessageBox.Show(output);
+                                                        }
+                                                        memorypatched = true;
+                                                    }
                                                 }
+                                                
                                             }
                                         }
                                     }
